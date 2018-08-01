@@ -1,0 +1,37 @@
+# Template used to create this container: /usr/share/lxc/templates/lxc-busybox
+# Parameters passed to the template:
+# Template script checksum (SHA-1): d704d3c7b487841a16a7b3dd706cf1864cad61a1
+# For additional config options, please look at lxc.container.conf(5)
+
+lxc.include = /etc/lxc/default.conf
+lxc.idmap = u 0 100000 65536
+lxc.idmap = g 0 100000 65536
+lxc.rootfs.path = dir:/home/elliott/.local/share/lxc/android/rootfs
+lxc.mount.entry = /home/elliott/emugui/disk/data data none bind,optional 0 0
+lxc.mount.entry = /home/elliott/emugui/disk/cache cache none bind,optional 0 0
+lxc.mount.entry = /dev/dri/card0 dev/dri/card0 none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file 0 0	
+lxc.mount.entry = /dev/binder dev/binder none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/uinput dev/uinput none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/ashmem dev/ashmem none bind,optional,create=file 0 0
+lxc.mount.entry = /tmp/android-dbus host none bind,optional,create=dir 0 0
+lxc.mount.entry = /tmp/android-dbus/input dev/input none bind,optional,create=dir 0 0
+lxc.mount.entry = /dev/fuse dev/fuse none bind,optional,create=file 0 0
+lxc.signal.halt = SIGUSR1
+lxc.signal.reboot = SIGTERM
+lxc.uts.name = "android"
+lxc.tty.max = 0
+lxc.pty.max = 1024
+lxc.tty.dir = ""
+lxc.net.0.type="veth"
+lxc.net.0.flags="up"
+lxc.net.0.link="lxcbr0"
+
+
+# When using LXC with apparmor, uncomment the next line to run unconfined:
+lxc.apparmor.profile = unconfined
+lxc.mount.auto = proc:mixed sys:mixed cgroup:mixed
+lxc.autodev = 1
+lxc.environment = PATH=/system/bin:/system/sbin:/system/xbin:/bin
+lxc.init.cmd=/init
+

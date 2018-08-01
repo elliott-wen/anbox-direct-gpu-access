@@ -1,0 +1,1 @@
+clang++  emumain.cpp misc.cpp  -O2 -lpthread -g  -lxcb -lxcb-dri3 -lxcb-present -lpulse-simple -lxcb-icccm

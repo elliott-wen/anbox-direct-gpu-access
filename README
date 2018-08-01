@@ -1,0 +1,33 @@
+LXC-Based Android (Only tested for Intel GPU on Ubuntu 18.04)
+
+This repo contains my modification to the graphics stacks of Anbox (https://github.com/anbox/anbox). In short, it now directly issues GPU calls to the GPU directly without doing any proxying stuff (https://android.googlesource.com/device/generic/goldfish/+/252a53c/opengl/README). This greatly enhances the GPU performance and 60 FPS is achevied.
+
+This repo contains three components, which are the binary android image (i.e., rootfs.tar), emulator GUI, and LXC-configure file.
+
+To deploy it, 
+
+(1) you must install and load the kernel modules provided by Anbox first. 
+
+(2) Set 0666 permission to /dev/binder, /dev/ashmem, /dev/dri/*
+
+(3) Then you should also set-up the LXC environment (https://stgraber.org/2014/01/17/lxc-1-0-unprivileged-containers/), and create a container using
+lxc-create -t busybox -n android
+
+(4) now you could extract the rootfs to ~/.local/share/lxc/android/rootfs
+
+(5) use nsexec.c to fix the permisson of ~/.local/share/lxc/android/rootfs 
+
+sudo nsexec -b ~/.local/share/lxc/android/rootfs  0 100000 65536
+
+(6) overwrite config file ~/.local/share/lxc/android/config with the configure file in this repo, fix the following paths 
+lxc.rootfs.path = dir:/home/yourusername/.local/share/lxc/android/rootfs # 
+lxc.mount.entry = /home/yourusername/disk/data data none bind,optional 0 0 # for data partion, set the permission to 777
+lxc.mount.entry = /home/yourusername/disk/cache cache none bind,optional 0 0 # for cache partion, set the permission to 777
+
+(7) Compile emu gui by running build.sh, you may have to install dependent libraries from xcb, just google what you are missing.
+
+To run it
+
+(1) run emu gui and start android by lxc-start -F -n android 
+
+(2) use adb to install whatever you want
